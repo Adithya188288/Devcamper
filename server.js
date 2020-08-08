@@ -17,6 +17,9 @@ if (process.env.NODE_ENV === "development") {
     app.use(morgan('dev'));
 }
 
+app.use(express.json());
+
+
 connectDB();
 
 var bootcampRouter = require("./routes/bootcamps");
