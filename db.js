@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const e = require("express");
 module.exports = async () => {
     var URI;
 
