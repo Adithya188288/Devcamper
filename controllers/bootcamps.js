@@ -7,8 +7,38 @@ const asyncHandler = require("../middleware/asyncHandler");
 @access  Public
 */
 module.exports.getAllBootcamps = asyncHandler(async (req, res, next) => {
-    let bootcamps = await Bootcamp.find().lean();
+
+    let { query } = req;
+
+    let reqQuery = {...query};
+  
+    let removeFields = ["select", 'sort']
+    
+    removeFields.forEach(field => delete reqQuery[field])
+
+    let queryStr = JSON.stringify(reqQuery);
+
+    queryStr = queryStr.replace(/\b('gt|gte|lt|lte|in')\b/, match => `$${match}`);
+    
+    queryStr = JSON.parse(queryStr);
+    
+    let bootcamps = Bootcamp.find(queryStr).lean()
+
+    if(query.select){
+        let val = query.select.split(",").join(" ")
+        bootcamps = bootcamps.select(val)
+    }
+
+    if(query.sort){
+        let val = query.sort.split(",").join(" ")
+        bootcamps = bootcamps.sort(val)
+    }
+
+    bootcamps = await bootcamps
+
     res.status(200).json({ success: true, count: bootcamps.length, data: bootcamps });
+    
+
 });
 
 /* 
@@ -17,13 +47,11 @@ module.exports.getAllBootcamps = asyncHandler(async (req, res, next) => {
 @access  Public
 */
 module.exports.getBootcamp = asyncHandler(async (req, res, next) => {
-
     let bootcamp = await Bootcamp.findById(req.params.id).lean();
 
     if (!bootcamp) {
         return next(new ErrorResponse(`No Bootcamp found with the Id ${req.params.id}`, 404));
     }
-
     return res.status(200).json({ success: true, data: bootcamp });
 });
 
