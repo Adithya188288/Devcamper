@@ -23,8 +23,11 @@ app.use(express.json());
 connectDB();
 
 var bootcampRouter = require("./routes/bootcamps");
+var courseRouter = require("./routes/courses");
+
 
 app.use("/api/v1/bootcamps", bootcampRouter);
+app.use("/api/v1/courses", courseRouter);
 
 
 app.use(errorHandler);
