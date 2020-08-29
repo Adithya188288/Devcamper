@@ -13,22 +13,26 @@ const asyncHandler = require("../middleware/asyncHandler");
 
 module.exports.getAllCourses = asyncHandler(async (req, res, next) => {
     let query;
-    
-    if (req.params.bootcampId) {
-       query = Course.find({bootcamp:req.params.bootcampId}) 
-    }else{
-        query = Course.find()
-    }
-    let courses = await query.populate({
-        path:'bootcamp',
-        select:"name email phone website"
-    });
 
-    res.status(200).json({
-        success:true,
-        count:courses.length,
-        data:courses,
-    })
+    if (req.params.bootcampId) {
+        query = Course.find({ bootcamp: req.params.bootcampId });
+        
+        let courses = await query.populate({
+            path: 'bootcamp',
+            select: "name email phone website"
+        });
+
+        return res.status(200).json({
+            success: true,
+            count: courses.length,
+            data: courses,
+        });
+
+    } else {
+        // query = Course.find()
+        return res.status(200).json(res.advancedResults);
+    }
+
 });
 
 
@@ -40,21 +44,23 @@ module.exports.getAllCourses = asyncHandler(async (req, res, next) => {
 
 module.exports.getCourse = asyncHandler(async (req, res, next) => {
 
-    let id = req.params.id;
+    // let id = req.params.id;
 
-    let course = await Course.findById(id).populate({
-        path:"bootcamp",
-        select:"name email phone website"
-    })
+    // let course = await Course.findById(id).populate({
+    //     path: "bootcamp",
+    //     select: "name email phone website"
+    // });
 
-    if(!course){
-        return next(new ErrorResponse(`No courses found with given Id - ${id}`, 404))
-    }
+    // if (!course) {
+    //     return next(new ErrorResponse(`No courses found with given Id - ${id}`, 404));
+    // }
 
-    res.status(200).json({
-        success:true,
-        data:course
-    })
+    // res.status(200).json({
+    //     success: true,
+    //     data: course
+    // });
+
+    return res.status(200).json(res.advancedResults)
 
 });
 
@@ -75,16 +81,16 @@ module.exports.addCourse = asyncHandler(async (req, res, next) => {
 
     let bootcamp = await Bootcamp.findById(bootcampId);
 
-    if(!bootcamp){
-        return next(new ErrorResponse(`No bootcamp found with the id - ${bootcampId}`,404))
+    if (!bootcamp) {
+        return next(new ErrorResponse(`No bootcamp found with the id - ${bootcampId}`, 404));
     }
 
     let course = await Course.create(req.body);
 
     res.status(201).json({
-        success:true,
-        data:course
-    })
+        success: true,
+        data: course
+    });
 
 });
 
@@ -102,19 +108,19 @@ module.exports.updateCourse = asyncHandler(async (req, res, next) => {
 
     let course = await Course.findById(courseId);
 
-    if(!course){
-        return next(new ErrorResponse(`No course found with the id - ${courseId}`,404))
+    if (!course) {
+        return next(new ErrorResponse(`No course found with the id - ${courseId}`, 404));
     }
 
-    course = await Course.findByIdAndUpdate(courseId, req.body,{
-        new:true,
-        runValidators:true
-    })
+    course = await Course.findByIdAndUpdate(courseId, req.body, {
+        new: true,
+        runValidators: true
+    });
 
     res.status(201).json({
-        success:true,
-        data:course
-    })
+        success: true,
+        data: course
+    });
 
 });
 
@@ -131,15 +137,15 @@ module.exports.deleteCourse = asyncHandler(async (req, res, next) => {
 
     let course = await Course.findById(courseId);
 
-    if(!course){
-        return next(new ErrorResponse(`No course found with the id - ${courseId}`,404))
+    if (!course) {
+        return next(new ErrorResponse(`No course found with the id - ${courseId}`, 404));
     }
 
-    course.remove()
+    course.remove();
 
     res.status(201).json({
-        success:true,
-        data:{}
-    })
+        success: true,
+        data: {}
+    });
 
 });
