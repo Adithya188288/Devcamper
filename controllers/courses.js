@@ -63,7 +63,7 @@ module.exports.getCourse = asyncHandler(async (req, res, next) => {
 
 /*
 @desc - Add a course,
-@route - GET /api/v1/bootcamp/:bootcampId/courses
+@route - GET /api/v1/bootcamps/:bootcampId/courses
 @access - Public
 */
 

@@ -103,6 +103,7 @@ const BootcampSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
+
 // Remove all the courses with the bootcampId
 BootcampSchema.pre('remove', async function (next) {
     await this.model('Course').deleteMany({ bootcamp: this._id });
