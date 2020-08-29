@@ -4,6 +4,8 @@ const morgan = require("morgan");
 const colors = require("colors");
 const connectDB = require('./db');
 const errorHandler = require("./middleware/errors");
+const fileUpload = require("express-fileupload");
+const path = require("path");
 
 /* require all middleware */
 
@@ -17,6 +19,8 @@ if (process.env.NODE_ENV === "development") {
     app.use(morgan('dev'));
 }
 
+app.use(express.static(path.join(__dirname, 'public')))
+app.use(fileUpload());
 app.use(express.json());
 
 
@@ -24,6 +28,7 @@ connectDB();
 
 var bootcampRouter = require("./routes/bootcamps");
 var courseRouter = require("./routes/courses");
+const { addBootcamp } = require("./controllers/bootcamps");
 
 
 app.use("/api/v1/bootcamps", bootcampRouter);
