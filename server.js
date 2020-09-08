@@ -28,11 +28,14 @@ connectDB();
 
 var bootcampRouter = require("./routes/bootcamps");
 var courseRouter = require("./routes/courses");
-const { addBootcamp } = require("./controllers/bootcamps");
+var authRouter = require("./routes/auth");
+
 
 
 app.use("/api/v1/bootcamps", bootcampRouter);
 app.use("/api/v1/courses", courseRouter);
+app.use("/api/v1/auth", authRouter);
+
 
 
 app.use(errorHandler);
