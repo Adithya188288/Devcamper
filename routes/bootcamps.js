@@ -1,4 +1,7 @@
 const express = require("express");
+const { protect } = require("../middleware/protect");
+const { authorizeRoles } = require("../middleware/roles");
+
 var router = express.Router();
 
 const courseRouter = require("../routes/courses");
@@ -13,10 +16,10 @@ const asyncHandler = require("../middleware/asyncHandler");
 
 router.get("/",advancedResults(Bootcamp, 'courses'), getAllBootcamps);
 router.get("/:id",advancedResults(Bootcamp, 'courses') ,getBootcamp);
-router.post("/", addBootcamp);
-router.put("/:id", updateBootcamp);
-router.delete("/:id", deleteBootcamp);
-router.put("/:id/photo", uploadBootcampPhoto);
+router.post("/", protect, authorizeRoles("publisher", "admin"), addBootcamp);
+router.put("/:id", protect, authorizeRoles("publisher", "admin"), updateBootcamp);
+router.delete("/:id",protect, authorizeRoles("publisher", "admin"),deleteBootcamp);
+router.put("/:id/photo",protect, authorizeRoles("publisher", "admin"), uploadBootcampPhoto);
 
 
 module.exports = router;

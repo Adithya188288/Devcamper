@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const ErrorResponse = require("../utils/ErrorResponse");
 const asyncHandler = require("../middleware/asyncHandler");
+const { findById } = require("../models/User");
 
 
 
@@ -57,6 +58,20 @@ module.exports.login = asyncHandler(async (req, res, next) => {
     sendTokenFromResponse(user, 200, res);
 });
 
+
+/* 
+@desc    returns the user id based on the auth token 
+@route   GET /api/v1/auth/getMe
+@access  Private
+*/
+module.exports.getMe = asyncHandler(async (req, res, next) => {
+    let user = await User.findById(req.user.id);
+
+    return res.status(200).json({
+        success:true,
+        data:user
+    })
+});
 
 sendTokenFromResponse = (user, status, res) => {
 

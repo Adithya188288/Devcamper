@@ -2,7 +2,8 @@ const Bootcamp = require("../models/Bootcamp");
 const ErrorResponse = require("../utils/ErrorResponse");
 const asyncHandler = require("../middleware/asyncHandler");
 const path = require("path");
-const { findByIdAndUpdate } = require("../models/Bootcamp");
+
+
 
 
 /* 
