@@ -24,7 +24,7 @@ module.exports = asyncHandler( async (req, res, next) => {
     let bootcamp = await Model.findById(req.params.id);
 
     //@ only the owner of the bootcamp or an admin user can update this bootcamp
-    if(bootcamp.user == req.user.id || req.user.role == "admin"){
+    if(bootcamp.user.toString() == req.user.id || req.user.role == "admin"){
         next()
     }else{
         next(new ErrorResponse(`You are not authorized to update this bootcamp as you are not the owner of this bootcamp`))
