@@ -3,7 +3,7 @@ let Course = require("../models/Course");
 const ErrorResponse = require("../utils/ErrorResponse");
 let asyncHandler = require("../middleware/asyncHandler");
 
-module.exports = (model) => asyncHandler( async (req, res, next) => {
+module.exports = (model, paramsId) => asyncHandler( async (req, res, next) => {
 
     let Model = "";
     if(model == 'Bootcamp'){
@@ -19,7 +19,7 @@ module.exports = (model) => asyncHandler( async (req, res, next) => {
         process.exit(0)
     }
 
-    let modalData = await Model.findById(req.params.id);
+    let modalData = await Model.findById(req.params[paramsId]);
 
     if (!modalData) {
         return next(new ErrorResponse(`No ${Model.modelName} found with the Id ${req.params.id}`, 404));
@@ -29,7 +29,11 @@ module.exports = (model) => asyncHandler( async (req, res, next) => {
     if(modalData.user.toString() == req.user.id || req.user.role == "admin"){
         next()
     }else{
-        next(new ErrorResponse(`You are not authorized to update this bootcamp as you are not the owner of this bootcamp`,401))
+        if(paramsId == "bootcampId"){
+            next(new ErrorResponse(`You are not authorized to modify this course as you are not the owner of this ${Model.modelName}`,401))
+        }else{
+            next(new ErrorResponse(`You are not authorized to modify this ${Model.modelName} as you are not the owner of this ${Model.modelName}`,401))
+        }
     }
 
 })

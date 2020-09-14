@@ -19,9 +19,9 @@ const asyncHandler = require("../middleware/asyncHandler");
 router.get("/", advancedResults(Bootcamp, 'courses'), getAllBootcamps);
 router.get("/:id", advancedResults(Bootcamp, 'courses'), getBootcamp);
 router.post("/", protect, authorizeRoles("publisher", "admin"), addBootcamp);
-router.put("/:id", protect, authorizeRoles("publisher", "admin"), validateIfUserAndModelAreRelated("Bootcamp"), updateBootcamp);
-router.delete("/:id", protect, authorizeRoles("publisher", "admin"), validateIfUserAndModelAreRelated("Bootcamp"), deleteBootcamp);
-router.put("/:id/photo", protect, authorizeRoles("publisher", "admin"), validateIfUserAndModelAreRelated("Bootcamp"), uploadBootcampPhoto);
+router.put("/:id", protect, authorizeRoles("publisher", "admin"), validateIfUserAndModelAreRelated("Bootcamp", "id"), updateBootcamp);
+router.delete("/:id", protect, authorizeRoles("publisher", "admin"), validateIfUserAndModelAreRelated("Bootcamp", "id"), deleteBootcamp);
+router.put("/:id/photo", protect, authorizeRoles("publisher", "admin"), validateIfUserAndModelAreRelated("Bootcamp","id"), uploadBootcampPhoto);
 
 
 module.exports = router;

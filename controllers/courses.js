@@ -76,8 +76,10 @@ module.exports.getCourse = asyncHandler(async (req, res, next) => {
 module.exports.addCourse = asyncHandler(async (req, res, next) => {
 
     let bootcampId = req.params.bootcampId;
+    
 
     req.body.bootcamp = bootcampId;
+    req.body.user = req.user.id
 
     let bootcamp = await Bootcamp.findById(bootcampId);
 
