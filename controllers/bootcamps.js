@@ -103,6 +103,18 @@ module.exports.getBootcamp = asyncHandler(async (req, res, next) => {
 @access  Private
 */
 module.exports.addBootcamp = asyncHandler(async (req, res, next) => {
+    //@add user if logged in
+    req.body.user = req.user.id;
+
+    //@check permission and added based on the user permission. if the user is a publisher, 
+    //only 1 bootcamp can be created. if they are admin. they don't have any restriction
+    
+    let publishedBootcamps = await Bootcamp.findOne({user:req.user.id});
+
+    if(publishedBootcamps && req.user.role !== "admin"){
+        return next(new ErrorResponse(`The user of type ${req.user.role} is allowed to create only 1 bootcamp`));
+    }
+    
     let bootcamp = await Bootcamp.create(req.body);
     return res.status(201).json({ success: true, data: bootcamp });
 });
