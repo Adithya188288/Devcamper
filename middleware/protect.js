@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 
 module.exports.protect = asyncHandler(async (req, res, next) => {
     let token = "";
-    console.log(req.cookie);
+    // console.log(req.cookie);
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         token = req.headers.authorization.split(" ")[1];
     } else if (req.hasOwnProperty("cookie") && req.cookie.hasOwnProperty("token") && req.cookie.token) {
