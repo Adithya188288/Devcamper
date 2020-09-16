@@ -126,11 +126,11 @@ module.exports.resetPassword = asyncHandler(async (req, res, next) => {
     let hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
     let user = await User.findOne({
-        resetPasswordToken:hashedToken,
-        resetPasswordExpire:{ $gt: Date.now() }
+        resetPasswordToken: hashedToken,
+        resetPasswordExpire: { $gt: Date.now() }
     });
 
-    if(!user){
+    if (!user) {
         return next(new ErrorResponse(`Invalid Token`, 400));
     }
 
@@ -140,8 +140,65 @@ module.exports.resetPassword = asyncHandler(async (req, res, next) => {
 
     await user.save();
 
-    sendTokenFromResponse(user, 200, res)
+    sendTokenFromResponse(user, 200, res);
 });
+
+/* 
+@desc    update the user details  
+@route   PUT /api/v1/auth/updateuserdetails
+@access  Private
+*/
+module.exports.updateUserDetails = asyncHandler(async (req, res, next) => {
+
+    let fieldsToUpdate = {};
+   
+    if(Object.keys(req.body).length == 0){
+        return next(new ErrorResponse(`Please provided user details to update`, 400))
+    }
+
+    if(req.body.email){
+        fieldsToUpdate['email'] = req.body.email
+    }
+
+    if(req.body.name){
+        fieldsToUpdate['name'] = req.body.name
+    }
+
+    let user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {new:true, runValidators:true});
+
+    return res.status(200).json({
+        success: true,
+        data: user
+    });
+});
+
+/* 
+@desc    update the user password 
+@route   PUT /api/v1/auth/updatepassword
+@access  Private
+*/
+module.exports.updatePassword = asyncHandler(async (req, res, next) => {
+
+    if(Object.keys(req.body).length == 0 && !req.body.oldpassword && !req.body.newpassword){
+        return next(new ErrorResponse(`Please provide your old password and new password to update`, 400))
+    }
+    
+    let user = await User.findById(req.user.id).select("+password");
+
+    if(!(await user.comparePassword(req.body.oldpassword))){
+        return next(new ErrorResponse(`Password does not match`, 401))
+    }
+
+    user.password = req.body.newpassword
+    await user.save();
+    user.password = undefined
+
+    return res.status(200).json({
+        success: true,
+        data: user
+    });
+});
+
 
 sendTokenFromResponse = (user, status, res) => {
 
